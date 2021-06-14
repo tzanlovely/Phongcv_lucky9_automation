@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AutoLibrary">
+    <output-path>$PROJECT_DIR$/out/artifacts/AutoLibrary</output-path>
+    <root id="archive" name="AutoLibrary.jar">
+      <element id="module-output" name="Exercise" />
+      <element id="library" level="project" name="Lib" />
+    </root>
+  </artifact>
+</component>

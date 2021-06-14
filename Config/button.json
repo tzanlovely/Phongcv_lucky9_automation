@@ -1,0 +1,52 @@
+{
+  "lobby": {
+    "setting": "btn_Settings",
+    "bet": "btn_Channel"
+  },
+
+  "settings": {
+    "logOut": "btn_Logout",
+    "back": "btn_Back"
+  },
+
+  "loginScreen": {
+    "zID": "btn_ZID"
+  },
+
+  "channel": {
+    "manila": {
+      "name": "btn_Channel",
+      "id": 1
+    },
+    "makati": {
+      "name": "btn_Channel",
+      "id": 2
+    },
+    "davao": {
+      "name": "btn_Channel",
+      "id": 3
+    },
+    "cebu": {
+      "name": "btn_Channel",
+      "id": 4
+    },
+    "back": "btn_Close"
+  },
+
+  "zingID": {
+    "account": "sprite_Name",
+    "password": "sprite_Pass",
+    "login": "btn_Ok",
+    "back": "btn_Back"
+  },
+  "inGame": {
+    "back": "btn_Menu",
+    "stock": "btn_Stock",
+    "betx1": "btn_BetX1",
+    "betx3": "btn_BetX3",
+    "double": "btn_Double",
+    "allIn": "btn_BetAll",
+    "hit": "btn_Hit",
+    "stand": "btn_Stand"
+  }
+}
