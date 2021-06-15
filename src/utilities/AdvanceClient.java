@@ -3,6 +3,7 @@ package utilities;
 import org.sikuli.script.Key;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class AdvanceClient extends Client {
     public AdvanceClient(String title) {
@@ -44,7 +45,13 @@ public class AdvanceClient extends Client {
         }
     }
 
-    public boolean checkUser(String... filter) {
+    public boolean isExist(List<String> filter) {
+
+
+        return true;
+    }
+
+    public boolean checkUser(List<String> filter) {
         return true;
     }
 

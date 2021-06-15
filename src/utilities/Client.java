@@ -55,7 +55,7 @@ public class Client implements IClient {
         this.width = window.w;
         this.height = window.h;
         this.window.highlight(1);
-        String adbAddress = config.getJSONObject("Client1").getString("adbAddress");
+        String adbAddress = config.getJSONObject(title).getString("adbAddress");
         adbLog = new AdbLog(adbAddress);
 
     }
@@ -79,7 +79,6 @@ public class Client implements IClient {
         Thread.sleep(300);
     }
 
-    @Override
     public JSONObject getUserInfo() throws Exception {
         JSONObject userInfo = null;
         refreshLog();
@@ -97,7 +96,6 @@ public class Client implements IClient {
         return userInfo;
     }
 
-    @Override
     public JSONArray getPosition() throws Exception {
         JSONArray positionLog = null;
         refreshLog();
@@ -115,7 +113,6 @@ public class Client implements IClient {
         return positionLog;
     }
 
-    @Override
     public void sleep(String time) throws Exception {
         Thread.sleep(Integer.parseInt(time));
     }

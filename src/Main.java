@@ -1,37 +1,29 @@
 
-import utilities.*;
+import io.impl.XLSX;
+import model.TestResult;
+import runtest.BasicRunTest;
+import runtest.IRunTest;
+import testsets.BasicTestSet;
+import testsets.ITestSet;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Main {
+    private static IRunTest runTest = new BasicRunTest();
+    private static List<ITestSet> testSets = new ArrayList<>();
+    private static String[] names = new String[]{"channelTest"};
 
     public static void main(String[] args) throws Exception {
-//        Method method = MethodExtraction.getPublicMethodByName(A.class, "A");
-//        String[] a = new String[]{"abcd"};
-//        method.invoke(new A(), new Object[]{a});
-        Client client2 = Client.getInstance(2);
-        List<String> list = new ArrayList<>();
-        list.add("name:btn_BetX3");
-        client2.click(list);
-    }
-
-    private static class A {
-        public void A(String... abc) {
-            System.out.println(Arrays.asList(abc).size());
+        for(String name: names) {
+            ITestSet iTestSet = new BasicTestSet(new XLSX(), name);
+            testSets.add(iTestSet);
         }
-//
-//        private void B() {
-//
-//        }
+
+        for (int i=0; i<testSets.size(); i++) {
+            TestResult testResult = runTest.runTest(testSets.get(i));
+            runTest.writeOut(testResult, names[i]);
+        }
     }
-//
-//    private static class B extends A {
-//        public void B() {
-//            System.out.println("b");
-//        }
-//    }
 
 }

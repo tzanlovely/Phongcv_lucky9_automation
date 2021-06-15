@@ -1,6 +1,6 @@
 package model;
 
-import java.util.Arrays;
+import org.sikuli.script.Image;
 
 public class TestCase {
     private String title;
@@ -10,6 +10,24 @@ public class TestCase {
     private String linkLog;
     private Step[] steps;
     private String cheatID;
+    private Step failStep;
+    private Image failImg;
+
+    public Step getFailStep() {
+        return failStep;
+    }
+
+    public void setFailStep(Step failStep) {
+        this.failStep = failStep;
+    }
+
+    public Image getFailImg() {
+        return failImg;
+    }
+
+    public void setFailImg(Image failImg) {
+        this.failImg = failImg;
+    }
 
     public String getResult() {
         return result;

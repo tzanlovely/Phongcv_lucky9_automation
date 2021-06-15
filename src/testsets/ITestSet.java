@@ -4,7 +4,7 @@ import model.TestCase;
 
 import java.util.List;
 
-public interface TestSet {
-    public void loadTestSet();
+public interface ITestSet {
     public List<TestCase> getTestSet();
+    public int getNTest();
 }
