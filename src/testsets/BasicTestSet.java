@@ -1,6 +1,7 @@
 package testsets;
 
 import client.AdvanceLDClient;
+import client.IClient;
 import io.Excel;
 import model.Status;
 import model.Step;
@@ -29,12 +30,12 @@ public class BasicTestSet implements ITestSet {
         TestCase testCase = new TestCase();
         Object[][] information = xlsx.read(sheet, 0, 1, 5, 1);
 
-        testCase.setTitle((String) information[0][0]);
-        testCase.setNumberClients(Integer.parseInt((String) information[1][0]));
-        testCase.setTypeOfClient((String) information[2][0]);
-        testCase.setResult((String) information[3][0]);
-        testCase.setLinkLog((String) information[4][0]);
-        testCase.setCheatID((String)information[5][0]);
+        testCase.setTitle(((String) information[0][0]).trim());
+        testCase.setNumberClients(Integer.parseInt(((String) information[1][0]).trim()));
+        testCase.setTypeOfClient(((String) information[2][0]).trim());
+        testCase.setResult(((String) information[3][0]).trim());
+        testCase.setLinkLog(((String) information[4][0]).trim());
+        testCase.setCheatID(((String)information[5][0]).trim());
 
         Object[][] stepExact = xlsx.read(sheet, 11, 0, 3);
         Step[] steps = new Step[stepExact.length];
@@ -56,8 +57,8 @@ public class BasicTestSet implements ITestSet {
         String[] tryFunc = ((String) target[1]).split(",");
         if (tryFunc.length > 1) {
             try {
-                Class cls = Class.forName("func."+tryFunc[0]);
-                Method method = MethodExtractor.getPublicMethodByName(cls, tryFunc[2]);
+                Class cls = Class.forName("func."+tryFunc[0].trim());
+                Method method = MethodExtractor.getPublicMethodByName(cls, tryFunc[2].trim());
                 step.setAction(method);
                 step.setTarget(null);
             } catch (Exception e) {
@@ -65,11 +66,14 @@ public class BasicTestSet implements ITestSet {
             }
         }
         else {
-            step.setTarget(AdvanceLDClient.getInstance(Integer.parseInt((String) target[1])));
             try {
                 Method action = null;
-                action = MethodExtractor.getPublicMethodByName(AdvanceLDClient.class, (String) target[2]);
+                Class cls = Class.forName("client."+typeOfClient);
+                action = MethodExtractor.getPublicMethodByName(cls, (String) target[2]);
                 step.setAction(action);
+
+                Method method = MethodExtractor.getPublicMethodByName(cls, "getInstance");
+                step.setTarget((IClient) method.invoke(null,Integer.parseInt(((String) target[1]).trim())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -104,8 +108,8 @@ public class BasicTestSet implements ITestSet {
 
         for (int i=0; i<result.length; i++) {
             Status status = new Status();
-            status.setTestCase((String)result[i][0]);
-            status.setStatus((String)result[i][1]);
+            status.setTestCase(((String)result[i][0]).trim());
+            status.setStatus(((String)result[i][1]).trim());
 
             statuses.add(status);
         }
