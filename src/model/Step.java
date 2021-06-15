@@ -1,6 +1,5 @@
 package model;
-import utilities.Client;
-import utilities.IClient;
+import client.IClient;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

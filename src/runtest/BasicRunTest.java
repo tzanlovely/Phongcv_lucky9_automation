@@ -4,7 +4,7 @@ import model.Step;
 import model.TestCase;
 import model.TestResult;
 import testsets.ITestSet;
-import utilities.AdvanceClient;
+import client.AdvanceLDClient;
 import utilities.ZPCheat;
 
 import java.util.Arrays;
@@ -18,20 +18,25 @@ public class BasicRunTest implements IRunTest {
         testResult.setNCase(iTestSet.getNTest());
         testResult.setNTestedCase(testCases.size());
 
-//        ZPCheat zpCheat = new ZPCheat();
+        ZPCheat zpCheat = new ZPCheat();
         for (TestCase testCase: testCases) {
-//            zpCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
+            ZPCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
             Step[] steps = testCase.getSteps();
             for (Step step: steps) {
                 Thread.sleep(1000);
-                System.out.println(step.toString());
-                boolean result = doStep(step);
+                System.out.println("do step: "+ step.toString());
+                boolean result = true;
+                try {
+                    result = doStep(step);
+                } catch (Exception e) {
+                    result = false;
+                    ((AdvanceLDClient)step.getTarget()).backToLobby();
+                    ((AdvanceLDClient)step.getTarget()).logOut();
+                }
                 if (result == false) {
                     testCase.setResult("fail");
                     testCase.setFailStep(step);
                     testCase.setFailImg(step.getTarget().captureScreen());
-                    ((AdvanceClient)step.getTarget()).backToLobby();
-                    ((AdvanceClient)step.getTarget()).logOut();
                     testResult.getFailCases().add(testCase);
                     break;
                 }
@@ -45,7 +50,7 @@ public class BasicRunTest implements IRunTest {
 
     }
 
-    private boolean doStep(Step step) {
+    private boolean doStep(Step step) throws Exception {
         try {
             System.out.println(this.toString());
             Object preResult = null;
@@ -72,7 +77,7 @@ public class BasicRunTest implements IRunTest {
             System.out.println("ERROR: "+this.toString());
             System.out.println("****************************************************************************************");
             e.printStackTrace();
-            return false;
+            throw e;
         }
         return true;
     }

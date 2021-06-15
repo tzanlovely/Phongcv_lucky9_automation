@@ -1,4 +1,4 @@
-package utilities;
+package client;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -7,14 +7,15 @@ import org.sikuli.script.App;
 import org.sikuli.script.Image;
 import org.sikuli.script.Location;
 import org.sikuli.script.Region;
+import utilities.AdbLog;
+import utilities.Json;
+import utilities.Node;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
-public class Client implements IClient {
-    protected static Client[] clients = new Client[5];
+public class LDClient implements IClient {
+    protected static LDClient[] LDClients = new LDClient[5];
 
     protected String title;
     protected float width;
@@ -33,19 +34,19 @@ public class Client implements IClient {
 
     private static final int topBarHeight =35;
 
-    synchronized public static Client getInstance(int id) {
+    synchronized public static LDClient getInstance(int id) {
         assert id>0 && id<=6;
-        if (clients[id-1] == null) {
-            clients[id-1] = new Client("Client"+id);
-            System.out.println("created "+clients[id-1]);
+        if (LDClients[id-1] == null) {
+            LDClients[id-1] = new LDClient("Client"+id);
+            System.out.println("created "+ LDClients[id-1]);
         }
-        return clients[id-1];
+        return LDClients[id-1];
     }
 
     /**
      * @param title title of app
      */
-    protected Client(String title) {
+    protected LDClient(String title) {
         this.title = title;
         this.app = new App(title);
         if (app.window(0) == null) return;
@@ -120,7 +121,7 @@ public class Client implements IClient {
     @Override
     public JSONObject waitForExisting(List<String> filter) throws Exception {
         JSONObject jsonObject = null;
-        int i = 40;
+        int i = 20;
         while(jsonObject==null && i>0) {
             app.focus();
             JSONArray positionLog = getPosition();
@@ -139,8 +140,6 @@ public class Client implements IClient {
         JSONObject jsonObject = waitForExisting(filter);
 
         System.out.println("click: "+ filter.toString());
-//        JSONArray positionLog= getPosition();
-//        JSONObject jsonObject = Json.findJsonObjectByFilter(positionLog, filter);
         assert jsonObject != null;
         Node node = new Node(jsonObject);
         System.out.println("Relative location: " + node.x + " " + node.y);

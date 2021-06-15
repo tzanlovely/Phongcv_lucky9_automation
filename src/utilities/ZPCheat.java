@@ -9,8 +9,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ZPCheat {
     public static String cheatDataURL = "https://admin.zingplay.com/en/tools/deploy_docker/details/luckynine/socket_server/dev/0";
-    private WebDriver driver;
-    private WebDriverWait wait;
+    private static WebDriver driver;
+    private static WebDriverWait wait;
 
     public ZPCheat() {
         ChromeOptions options = new ChromeOptions();
@@ -20,8 +20,7 @@ public class ZPCheat {
         wait = new WebDriverWait(driver, 15);
     }
 
-    public void cheatData(int testCaseId) throws Exception {
-
+    public static void cheatData(int testCaseId) throws Exception {
         driver.get(cheatDataURL);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("form-manage-test-case-button")));
         driver.findElement(By.id("form-manage-test-case-button")).click();

@@ -1,32 +1,31 @@
-package utilities;
+package client;
 
 import org.sikuli.script.Key;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class AdvanceClient extends Client {
-    public AdvanceClient(String title) {
+public class AdvanceLDClient extends LDClient {
+    public AdvanceLDClient(String title) {
         super(title);
     }
 
-    synchronized public static Client getInstance(int id) {
+    synchronized public static LDClient getInstance(int id) {
         assert id>0 && id<=6;
-        if (clients[id-1] == null) {
-            clients[id-1] = new AdvanceClient("Client"+id);
-            System.out.println("created "+clients[id-1]);
-        } else if (!(clients[id-1] instanceof AdvanceClient)) {
-            clients[id-1] = new AdvanceClient("Client"+id);
-            System.out.println("created "+clients[id-1]);
+        if (LDClients[id-1] == null) {
+            LDClients[id-1] = new AdvanceLDClient("Client"+id);
+            System.out.println("created "+ LDClients[id-1]);
+        } else if (!(LDClients[id-1] instanceof AdvanceLDClient)) {
+            LDClients[id-1] = new AdvanceLDClient("Client"+id);
+            System.out.println("created "+ LDClients[id-1]);
         }
-        return clients[id-1];
+        return LDClients[id-1];
     }
 
     public void logIn(String id) {
         System.out.println("client "+this + " log in");
         try {
             this.click(Arrays.asList("name:btn_ZID"));
-            this.click(Arrays.asList("name:sprite_Name"));
             clearText("name:sprite_Name");
             this.type(id);
             this.click(Arrays.asList("name:btn_Ok"));
@@ -61,9 +60,8 @@ public class AdvanceClient extends Client {
 
     private void clearText(String id) {
         try {
-            this.refreshLog();
             this.click(Arrays.asList(id));
-            for (int i=0; i<20; i++) {
+            for (int i=0; i<10; i++) {
                 this.window.type(Key.BACKSPACE);
             }
         } catch (Exception e) {

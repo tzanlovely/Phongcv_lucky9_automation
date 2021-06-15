@@ -5,7 +5,7 @@ import org.sikuli.script.Image;
 public class TestCase {
     private String title;
     private int numberClients;
-    private int stt;
+    private String typeOfClient;
     private String result;
     private String linkLog;
     private Step[] steps;
@@ -49,12 +49,12 @@ public class TestCase {
         this.title = title;
     }
 
-    public int getStt() {
-        return stt;
+    public String getTypeOfClient() {
+        return typeOfClient;
     }
 
-    public void setStt(int stt) {
-        this.stt = stt;
+    public void setTypeOfClient(String stt) {
+        this.typeOfClient = stt;
     }
 
     public String isResult() {
@@ -94,7 +94,7 @@ public class TestCase {
         String a = "TestCase{" +
                 "title='" + title + '\'' +
                 ", numberClients=" + numberClients +
-                ", stt=" + stt +
+                ", stt=" + typeOfClient +
                 ", result='" + result + '\'' +
                 ", linkLog='" + linkLog + '\'' +
                 '}'+"\n";
