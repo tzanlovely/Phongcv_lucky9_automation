@@ -166,7 +166,7 @@ public class LDClient implements IClient {
     @Override
     public boolean isExist(List<String> filter) throws Exception {
         app.focus();
-        return Json.findJsonObjectByFilter(getPosition(), filter)!=null;
+        return (Json.findJsonObjectByFilter(getPosition(), filter))!=null;
     }
 
 }
