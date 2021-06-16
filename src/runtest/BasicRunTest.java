@@ -1,10 +1,10 @@
 package runtest;
 
+import func.Function;
 import model.Step;
 import model.TestCase;
 import model.TestResult;
 import testsets.ITestSet;
-import client.AdvanceLDClient;
 import utilities.ZPCheat;
 
 import java.util.Arrays;
@@ -18,8 +18,8 @@ public class BasicRunTest implements IRunTest {
         testResult.setNCase(iTestSet.getNTest());
         testResult.setNTestedCase(testCases.size());
 
-        ZPCheat zpCheat = new ZPCheat();
         for (TestCase testCase: testCases) {
+            ZPCheat zpCheat = new ZPCheat();
             ZPCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
             Step[] steps = testCase.getSteps();
             for (Step step: steps) {
@@ -30,10 +30,13 @@ public class BasicRunTest implements IRunTest {
                     result = doStep(step);
                 } catch (Exception e) {
                     result = false;
-                    ((AdvanceLDClient)step.getTarget()).backToLobby();
-                    ((AdvanceLDClient)step.getTarget()).logOut();
+                    Function.backToLobby(step.getTarget());
+                    Function.logOut(step.getTarget());
                 }
                 if (result == false) {
+                    System.out.println("#########################################################################");
+                    System.out.println("fail step "+ step.toString());
+                    System.out.println("#########################################################################");
                     testCase.setResult("fail");
                     testCase.setFailStep(step);
                     testCase.setFailImg(step.getTarget().captureScreen());
@@ -56,25 +59,30 @@ public class BasicRunTest implements IRunTest {
             Object preResult = null;
             boolean isArray = false;
 
-            if (step.getParams() != null)
-                for(Object param: step.getParams()) {
-                    if (((String)param).contains(":")) {
-                        isArray = true;
-                        break;
+            if (step.getTarget() != null) {
+                if (step.getParams() != null) {
+                    for (Object param : step.getParams()) {
+                        if (((String) param).contains(":")) {
+                            isArray = true;
+                            break;
+                        }
                     }
                 }
-
-            if (isArray) {
-                preResult = step.getAction().invoke(step.getTarget(), Arrays.asList(step.getParams()));
+                if (isArray) {
+                    preResult = step.getAction().invoke(step.getTarget(), Arrays.asList(step.getParams()));
+                } else {
+                    preResult = step.getAction().invoke(step.getTarget(), step.getParams());
+                }
             } else {
                 preResult = step.getAction().invoke(step.getTarget(), step.getParams());
             }
+
             if (preResult instanceof Boolean) {
                 return (boolean) preResult;
             }
         } catch (Exception e) {
             System.out.println("****************************************************************************************");
-            System.out.println("ERROR: "+this.toString());
+            System.out.println("ERROR: "+step.toString());
             System.out.println("****************************************************************************************");
             e.printStackTrace();
             throw e;

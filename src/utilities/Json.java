@@ -27,17 +27,31 @@ public class Json {
     }
 
     public static JSONObject findJsonObjectByFilter(JSONArray log, List<String> filter) {
-
         for (int j = 0; j < log.length(); j++) {
             boolean found=true;
             for (int i = 0; i < filter.size(); i++) {
                 String field=filter.get(i).split(":")[0];
                 String value=filter.get(i).split(":")[1];
+                System.out.println("**********************************************************************");
+                System.out.println("key: "+field+"\n value: "+value);
+                System.out.println("**********************************************************************");
                 if (!log.getJSONObject(j).get(field).toString().equals(value))
                     found=false;
             }
             if(found) return log.getJSONObject(j);
         }
+        System.out.println(log + " \n is not contain "+filter);
         return null;
+    }
+
+    public static boolean isInJSONObject(JSONObject jsonObject, List<String> filter) {
+        for(int i=0; i<filter.size(); i++) {
+            String field = filter.get(i).split(":")[0].trim();
+            String value = filter.get(i).split(":")[1].trim();
+            if(!jsonObject.get(field).toString().equals(value)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public class LDClient implements IClient {
-    protected static LDClient[] LDClients = new LDClient[5];
+    protected static LDClient[] LDClients = new LDClient[6];
 
     protected String title;
     protected float width;
@@ -76,11 +76,13 @@ public class LDClient implements IClient {
     }
 
     protected void refreshLog() throws Exception {
+        app.focus();
         window.click(imgPath + "cheatIcon.png");
         Thread.sleep(300);
     }
 
     public JSONObject getUserInfo() throws Exception {
+        app.focus();
         JSONObject userInfo = null;
         refreshLog();
         try {
@@ -98,6 +100,7 @@ public class LDClient implements IClient {
     }
 
     public JSONArray getPosition() throws Exception {
+        app.focus();
         JSONArray positionLog = null;
         refreshLog();
         try {
@@ -115,10 +118,10 @@ public class LDClient implements IClient {
     }
 
     public void sleep(String time) throws Exception {
+        app.focus();
         Thread.sleep(Integer.parseInt(time));
     }
 
-    @Override
     public JSONObject waitForExisting(List<String> filter) throws Exception {
         JSONObject jsonObject = null;
         int i = 20;
@@ -142,7 +145,6 @@ public class LDClient implements IClient {
         System.out.println("click: "+ filter.toString());
         assert jsonObject != null;
         Node node = new Node(jsonObject);
-        System.out.println("Relative location: " + node.x + " " + node.y);
         this.window.click(convertNodeLocation(node));
     }
 
@@ -153,6 +155,18 @@ public class LDClient implements IClient {
 
     public Image captureScreen() {
         return window.getImage();
+    }
+
+    @Override
+    public boolean checkUser(List<String> filter) throws Exception {
+        app.focus();
+        return Json.isInJSONObject(getUserInfo(), filter);
+    }
+
+    @Override
+    public boolean isExist(List<String> filter) throws Exception {
+        app.focus();
+        return Json.findJsonObjectByFilter(getPosition(), filter)!=null;
     }
 
 }

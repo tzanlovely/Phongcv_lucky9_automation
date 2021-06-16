@@ -1,6 +1,5 @@
 package testsets;
 
-import client.AdvanceLDClient;
 import client.IClient;
 import io.Excel;
 import model.Status;
@@ -30,12 +29,12 @@ public class BasicTestSet implements ITestSet {
         TestCase testCase = new TestCase();
         Object[][] information = xlsx.read(sheet, 0, 1, 5, 1);
 
-        testCase.setTitle(((String) information[0][0]).trim());
-        testCase.setNumberClients(Integer.parseInt(((String) information[1][0]).trim()));
+        if (information[0][0] != null) testCase.setTitle(((String) information[0][0]).trim());
+        if (information[1][0] != null) testCase.setNumberClients(Integer.parseInt(((String) information[1][0]).trim()));
         testCase.setTypeOfClient(((String) information[2][0]).trim());
-        testCase.setResult(((String) information[3][0]).trim());
-        testCase.setLinkLog(((String) information[4][0]).trim());
-        testCase.setCheatID(((String)information[5][0]).trim());
+        if (information[3][0] != null) testCase.setResult(((String) information[3][0]).trim());
+        if (information[4][0] != null) testCase.setLinkLog(((String) information[4][0]).trim());
+        if (information[5][0] != null) testCase.setCheatID(((String)information[5][0]).trim());
 
         Object[][] stepExact = xlsx.read(sheet, 11, 0, 3);
         Step[] steps = new Step[stepExact.length];
@@ -50,47 +49,49 @@ public class BasicTestSet implements ITestSet {
     }
 
     private Step extractStep(Object[] target, String typeOfClient) {
+        for (int i=0; i<target.length; i++) {
+            if(target[i] != null && target[i] instanceof String) target[i] = ((String)target[i]).trim();
+        }
+
         Step step = new Step();
 
         step.setStepID((double) target[0]);
 
-        String[] tryFunc = ((String) target[1]).split(",");
-        if (tryFunc.length > 1) {
+        try {
+            int nClient = Integer.parseInt((String)target[1]);
+            Class cls = Class.forName("client."+typeOfClient);
+            Method action = MethodExtractor.getPublicMethodByName(cls, (String) target[2]);
+            Method getInstance = MethodExtractor.getPublicMethodByName(cls, "getInstance");
+            step.setAction(action);
+            step.setTarget((IClient) getInstance.invoke(null, nClient));
+        } catch (Exception e) {
             try {
-                Class cls = Class.forName("func."+tryFunc[0].trim());
-                Method method = MethodExtractor.getPublicMethodByName(cls, tryFunc[2].trim());
-                step.setAction(method);
-                step.setTarget(null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            try {
-                Method action = null;
-                Class cls = Class.forName("client."+typeOfClient);
-                action = MethodExtractor.getPublicMethodByName(cls, (String) target[2]);
+                Class cls = Class.forName("func."+target[1]);
+                Method action = MethodExtractor.getPublicMethodByName(cls, (String) target[2]);
                 step.setAction(action);
-
-                Method method = MethodExtractor.getPublicMethodByName(cls, "getInstance");
-                step.setTarget((IClient) method.invoke(null,Integer.parseInt(((String) target[1]).trim())));
-            } catch (Exception e) {
-                e.printStackTrace();
+                step.setTarget(null);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
 
         if (target[3] != null) {
-            List<Object> params = Arrays.asList(((String) target[3]).split(","));
+            List<String> params = Arrays.asList(((String) target[3]).split("\\|"));
+
             if (step.getTarget()!=null) {
-                step.setParams(params.toArray());
+                List<String> parameters = new ArrayList<>();
+                for(String param: params) {
+                    parameters.add(param.trim());
+                }
+                step.setParams(parameters.toArray());
             } else {
                 try {
                     Class cls = Class.forName("client."+typeOfClient);
                     Method method = MethodExtractor.getPublicMethodByName(cls, "getInstance");
                     List<Object> parameters = new ArrayList<>();
-                    parameters.add(method.invoke(null, params.get(0)));
+                    parameters.add(method.invoke(null, Integer.parseInt(params.get(0))));
                     for (int i=1; i<params.size(); i++) {
-                        parameters.add(params.get(i));
+                        parameters.add(params.get(i).trim());
                     }
                     step.setParams(parameters.toArray());
                 } catch (Exception e) {

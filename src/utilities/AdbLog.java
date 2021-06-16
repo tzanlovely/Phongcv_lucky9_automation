@@ -84,7 +84,7 @@ public class AdbLog {
             positionLog += parts[3];
         }
 
-        System.out.println("position log: \n" + positionLog);
+//        System.out.println("position log: \n" + positionLog);
 
         return new JSONArray(positionLog);
     }
