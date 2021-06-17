@@ -1,3 +1,5 @@
+import client.LDClient;
+import func.Function;
 import utilities.MethodExtractor;
 import utilities.ZPCheat;
 
@@ -5,10 +7,11 @@ import java.lang.reflect.Method;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        ZPCheat zpCheat = new ZPCheat();
-        ZPCheat.cheatData(61);
-        Thread.sleep(30000);
-        ZPCheat.cheatData(63);
+//        ZPCheat zpCheat = new ZPCheat();
+//        ZPCheat.cheatData(61);
+//        Thread.sleep(30000);
+//        ZPCheat.cheatData(63);
+        Function.backToLobby(LDClient.getInstance(1));
     }
 
     private static class Test1{

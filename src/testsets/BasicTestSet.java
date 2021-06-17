@@ -29,6 +29,7 @@ public class BasicTestSet implements ITestSet {
         TestCase testCase = new TestCase();
         Object[][] information = xlsx.read(sheet, 0, 1, 5, 1);
 
+        testCase.setId(sheet.getSheetName());
         if (information[0][0] != null) testCase.setTitle(((String) information[0][0]).trim());
         if (information[1][0] != null) testCase.setNumberClients(Integer.parseInt(((String) information[1][0]).trim()));
         testCase.setTypeOfClient(((String) information[2][0]).trim());

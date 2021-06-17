@@ -32,7 +32,7 @@ public class ZPCheat {
 
         new Thread(() -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

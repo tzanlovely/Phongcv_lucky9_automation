@@ -1,14 +1,16 @@
 package runtest;
 
+import client.IClient;
 import func.Function;
+import io.FileReport;
+import io.impl.TXT;
 import model.Step;
 import model.TestCase;
 import model.TestResult;
 import testsets.ITestSet;
 import utilities.ZPCheat;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class BasicRunTest implements IRunTest {
     @Override
@@ -30,8 +32,6 @@ public class BasicRunTest implements IRunTest {
                     result = doStep(step);
                 } catch (Exception e) {
                     result = false;
-                    Function.backToLobby(step.getTarget());
-                    Function.logOut(step.getTarget());
                 }
                 if (result == false) {
                     System.out.println("#########################################################################");
@@ -39,7 +39,15 @@ public class BasicRunTest implements IRunTest {
                     System.out.println("#########################################################################");
                     testCase.setResult("fail");
                     testCase.setFailStep(step);
-                    testCase.setFailImg(step.getTarget().captureScreen());
+                    if(step.getTarget()!=null) {
+                        testCase.setFailImg(step.getTarget().captureScreen());
+                        Function.backToLobby(step.getTarget());
+                        Function.logOut(step.getTarget());
+                    } else if (step.getParams()!=null && step.getParams().length>0 && step.getParams()[0] instanceof IClient) {
+                        testCase.setFailImg(((IClient)step.getParams()[0]).captureScreen());
+                        Function.backToLobby((IClient) step.getParams()[0]);
+                        Function.logOut((IClient) step.getParams()[0]);
+                    }
                     testResult.getFailCases().add(testCase);
                     break;
                 }
@@ -50,7 +58,16 @@ public class BasicRunTest implements IRunTest {
 
     @Override
     public void writeOut(TestResult testResult, String fileName) throws Exception {
-
+        Calendar calendar = Calendar.getInstance();
+        fileName = String.format("%s_%d.%d_%d.%d.%d.%s",fileName,calendar.get(Calendar.MINUTE),calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),".txt");
+        FileReport fileReport = new TXT();
+        List<String> content = new LinkedList<>();
+        content.add("Tổng số test case "+testResult.getNCase());
+        content.add("Tổng số test fail "+testResult.getFailCases().size());
+        fileReport.write(fileName, content);
+        for(TestCase testCase: testResult.getFailCases()) {
+            testCase.getFailImg().save(testCase.getId()+".png",System.getProperty("user.dir") + "\\FileOutput\\");
+        }
     }
 
     private boolean doStep(Step step) throws Exception {

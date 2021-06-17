@@ -141,7 +141,7 @@ public class LDClient implements IClient {
         app.focus();
 
         JSONObject jsonObject = waitForExisting(filter);
-
+        Thread.sleep(500);
         System.out.println("click: "+ filter.toString());
         assert jsonObject != null;
         Node node = new Node(jsonObject);

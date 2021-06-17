@@ -3,6 +3,7 @@ package model;
 import org.sikuli.script.Image;
 
 public class TestCase {
+    private String id;
     private String title;
     private int numberClients;
     private String typeOfClient;
@@ -12,6 +13,14 @@ public class TestCase {
     private String cheatID;
     private Step failStep;
     private Image failImg;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Step getFailStep() {
         return failStep;

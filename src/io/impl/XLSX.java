@@ -59,6 +59,20 @@ public class XLSX implements Excel {
         return read(sheet, rowBegin, columnBegin, rowEnd, columnEnd);
     }
 
+    @Override
+    public void write(Sheet sheet, int rowBegin, int columnBegin, int rowEnd, int columnEnd, String[][] content) {
+        for(int i=rowBegin; i<=rowEnd; i++) {
+            Row row = sheet.getRow(i);
+            if (row == null) row = sheet.createRow(i);
+            for (int j=columnBegin; j<=columnEnd; j++) {
+                Cell cell = row.getCell(j);
+                if (cell == null) cell = row.createCell(j, CellType.STRING);
+                cell.setCellValue(content[i][j]);
+            }
+        }
+    }
+
+
     private Object getCellValue(Cell cell) {
         if (cell == null) return null;
 

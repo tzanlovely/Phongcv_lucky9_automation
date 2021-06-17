@@ -35,6 +35,7 @@ public class Function {
     public static boolean logOut(IClient client) throws Exception {
         System.out.println("Client"+ client +" log out");
         try {
+            if (!client.isExist(Arrays.asList("name:btn_Settings"))) return false;
             client.click(Arrays.asList("name:btn_Settings"));
             client.click(Arrays.asList("name:btn_Logout"));
         } catch (Exception e) {
@@ -49,11 +50,13 @@ public class Function {
     }
 
     public static void backToLobby(IClient client) throws Exception {
-        if (client.isExist(Arrays.asList("name:settings"))) return;
+        System.out.println("back to lobby: "+client);
         for(List<String> btn: backButtons) {
             if (client.isExist(btn)) {
                 client.click(btn);
+                Thread.sleep(500);
                 backToLobby(client);
+                return;
             }
         }
     }
