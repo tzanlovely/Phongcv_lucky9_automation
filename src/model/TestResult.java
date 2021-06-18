@@ -7,12 +7,22 @@ import java.util.List;
 public class TestResult {
     private int nCase;
     private int nTestedCase;
+    private int nFailCase;
     private List<TestCase> failCases;
 
     public TestResult() {
         nCase = 0;
         nTestedCase = 0;
+        nFailCase = 0;
         failCases = new ArrayList<>();
+    }
+
+    public int getNFailCase() {
+        return nFailCase;
+    }
+
+    public void setNFailCase(int nFailCase) {
+        this.nFailCase = nFailCase;
     }
 
     public int getNCase() {

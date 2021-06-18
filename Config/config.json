@@ -1,6 +1,6 @@
 {
     "Client1": {
-        "adbAddress": "emulator-5554"
+        "adbAddress": "127.0.0.1:5555"
     },
     "Client2": {
         "adbAddress": "127.0.0.1:5557"

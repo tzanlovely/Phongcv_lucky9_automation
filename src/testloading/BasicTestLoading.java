@@ -1,10 +1,11 @@
-package testsets;
+package testloading;
 
 import client.IClient;
 import io.Excel;
 import model.Status;
 import model.Step;
 import model.TestCase;
+import model.TestSet;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
@@ -15,27 +16,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BasicTestSet implements ITestSet {
+public class BasicTestLoading implements ITestLoading {
     private Excel xlsx;
-    private List<TestCase> testSet;
+    private TestSet testSet;
     private List<Status> statuses;
 
-    public BasicTestSet(Excel xlsx, String name) {
+    public BasicTestLoading(Excel xlsx, String name) {
         this.xlsx = xlsx;
+        testSet = new TestSet();
         loadTestSet(name);
     }
 
     private TestCase loadTestCase(Sheet sheet) {
-        TestCase testCase = new TestCase();
-        Object[][] information = xlsx.read(sheet, 0, 1, 5, 1);
-
-        testCase.setId(sheet.getSheetName());
-        if (information[0][0] != null) testCase.setTitle(((String) information[0][0]).trim());
-        if (information[1][0] != null) testCase.setNumberClients(Integer.parseInt(((String) information[1][0]).trim()));
-        testCase.setTypeOfClient(((String) information[2][0]).trim());
-        if (information[3][0] != null) testCase.setResult(((String) information[3][0]).trim());
-        if (information[4][0] != null) testCase.setLinkLog(((String) information[4][0]).trim());
-        if (information[5][0] != null) testCase.setCheatID(((String)information[5][0]).trim());
+        TestCase testCase = loadTestDescription(sheet);
 
         Object[][] stepExact = xlsx.read(sheet, 11, 0, 3);
         Step[] steps = new Step[stepExact.length];
@@ -46,6 +39,26 @@ public class BasicTestSet implements ITestSet {
 
         testCase.setSteps(steps);
 
+        return testCase;
+    }
+
+    private TestCase loadTestCaseWithOutStep(Sheet sheet) {
+        TestCase testCase = loadTestDescription(sheet);
+
+        return testCase;
+    }
+
+    private TestCase loadTestDescription(Sheet sheet) {
+        TestCase testCase = new TestCase();
+        Object[][] information = xlsx.read(sheet, 0, 1, 5, 1);
+
+        testCase.setId(sheet.getSheetName());
+        if (information[0][0] != null) testCase.setTitle(((String) information[0][0]).trim());
+        if (information[1][0] != null) testCase.setNumberClients(Integer.parseInt(((String) information[1][0]).trim()));
+        testCase.setTypeOfClient(((String) information[2][0]).trim());
+        if (information[3][0] != null) testCase.setResult(((String) information[3][0]).trim());
+        if (information[4][0] != null) testCase.setLinkLog(((String) information[4][0]).trim());
+        if (information[5][0] != null) testCase.setCheatID(((String)information[5][0]).trim());
         return testCase;
     }
 
@@ -123,25 +136,24 @@ public class BasicTestSet implements ITestSet {
         JSONObject config = Json.read(System.getProperty("user.dir") + "\\Config\\config.json");
         String fileName = config.getString(name);
         Workbook workbook = xlsx.openFile(fileName);
-        List<TestCase> testCases = new ArrayList<>();
+        List<TestCase> testingCases = new ArrayList<>();
+        List<TestCase> ignoreCases = new ArrayList<>();
 
         statuses = getStatus(xlsx.openSheet(workbook, "Status"));
 
         for (Status status: statuses) {
             if (status.getStatus().equals("test")) {
-                testCases.add(loadTestCase(xlsx.openSheet(workbook, status.getTestCase())));
+                testingCases.add(loadTestCase(xlsx.openSheet(workbook, status.getTestCase())));
+            } else {
+                ignoreCases.add(loadTestCaseWithOutStep(xlsx.openSheet(workbook, status.getTestCase())));
             }
         }
-        this.testSet = testCases;
+        this.testSet.setTestingCase(testingCases);
+        this.testSet.setIgnoreCase(ignoreCases);
     }
 
     @Override
-    public List<TestCase> getTestSet() {
-        return testSet;
-    }
-
-    @Override
-    public int getNTest() {
-        return statuses.size();
+    public TestSet getTestSet() {
+        return this.testSet;
     }
 }

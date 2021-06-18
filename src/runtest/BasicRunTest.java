@@ -2,29 +2,32 @@ package runtest;
 
 import client.IClient;
 import func.Function;
-import io.FileReport;
-import io.Word;
-import io.impl.DOCX;
-import io.impl.TXT;
 import model.Step;
 import model.TestCase;
 import model.TestResult;
-import testsets.ITestSet;
+import model.TestSet;
+import testloading.ITestLoading;
 import utilities.ZPCheat;
 
 import java.util.*;
 
 public class BasicRunTest implements IRunTest {
     @Override
-    public TestResult runTest(ITestSet iTestSet) throws Exception {
-        List<TestCase> testCases = iTestSet.getTestSet();
+    public TestResult runTest(ITestLoading iTestLoading) throws Exception {
+        TestSet testSet = iTestLoading.getTestSet();
+        List<TestCase> testCases = testSet.getTestingCase();
         TestResult testResult = new TestResult();
-        testResult.setNCase(iTestSet.getNTest());
+        testResult.setNCase(testSet.getIgnoreCase().size()+testSet.getTestingCase().size());
         testResult.setNTestedCase(testCases.size());
+        for (TestCase testCase: testSet.getIgnoreCase()) {
+            if (testCase.getResult().toLowerCase(Locale.ROOT).equals("fail")) {
+                testResult.setNFailCase(testResult.getNFailCase()+1);
+            }
+        }
 
         for (TestCase testCase: testCases) {
-            ZPCheat zpCheat = new ZPCheat();
-            ZPCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
+//            ZPCheat zpCheat = new ZPCheat();
+//            ZPCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
             Step[] steps = testCase.getSteps();
             for (Step step: steps) {
                 Thread.sleep(1000);
@@ -55,26 +58,9 @@ public class BasicRunTest implements IRunTest {
                 }
             }
         }
+
+        testResult.setNFailCase(testResult.getNFailCase()+testResult.getFailCases().size());
         return testResult;
-    }
-
-    @Override
-    public void writeOut(TestResult testResult, String fileName) throws Exception {
-        Calendar calendar = Calendar.getInstance();
-        String txtFileName = String.format("%s_%d.%d_%d.%d.%d.%s",fileName,calendar.get(Calendar.MINUTE),calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),".txt");
-        String wordFileName = txtFileName.replace("txt","docx");
-
-        FileReport fileReport = new TXT();
-        List<String> content = new LinkedList<>();
-        content.add("Tổng số test case "+testResult.getNCase());
-        content.add("Tổng số test fail "+testResult.getFailCases().size());
-        fileReport.write(txtFileName, content);
-
-        Word word = new DOCX();
-        for(TestCase testCase: testResult.getFailCases()) {
-            word.write(wordFileName, Arrays.asList(testCase.getId()));
-            word.printImage(wordFileName, testCase.getFailImg());
-        }
     }
 
     private boolean doStep(Step step) throws Exception {
