@@ -77,8 +77,17 @@ public class LDClient implements IClient {
 
     protected void refreshLog() throws Exception {
         app.focus();
-        window.click(imgPath + "cheatIcon.png");
-        Thread.sleep(300);
+        try {
+            window.click(imgPath + "cheatIcon.png");
+        } catch (Exception e) {
+            try {
+                window.click(imgPath + "cheatIcon.png");
+            } catch (Exception ex) {
+                throw ex;
+            }
+            throw e;
+        }
+        Thread.sleep(100);
     }
 
     public JSONObject getUserInfo() throws Exception {
@@ -107,11 +116,11 @@ public class LDClient implements IClient {
             positionLog = adbLog.getPositionLog();
         } catch (JSONException e) {
             System.out.println("JSONException");
-            Thread.sleep(500);
+            Thread.sleep(100);
             positionLog = getPosition();
         } catch (StringIndexOutOfBoundsException e) {
             System.out.println("String index out of bounds exception");
-            Thread.sleep(500);
+            Thread.sleep(100);
             positionLog = getPosition();
         }
         return positionLog;
@@ -141,7 +150,7 @@ public class LDClient implements IClient {
         app.focus();
 
         JSONObject jsonObject = waitForExisting(filter);
-        Thread.sleep(500);
+        Thread.sleep(300);
         System.out.println("click: "+ filter.toString());
         assert jsonObject != null;
         Node node = new Node(jsonObject);

@@ -3,6 +3,8 @@ package runtest;
 import client.IClient;
 import func.Function;
 import io.FileReport;
+import io.Word;
+import io.impl.DOCX;
 import io.impl.TXT;
 import model.Step;
 import model.TestCase;
@@ -59,14 +61,19 @@ public class BasicRunTest implements IRunTest {
     @Override
     public void writeOut(TestResult testResult, String fileName) throws Exception {
         Calendar calendar = Calendar.getInstance();
-        fileName = String.format("%s_%d.%d_%d.%d.%d.%s",fileName,calendar.get(Calendar.MINUTE),calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),".txt");
+        String txtFileName = String.format("%s_%d.%d_%d.%d.%d.%s",fileName,calendar.get(Calendar.MINUTE),calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),".txt");
+        String wordFileName = txtFileName.replace("txt","docx");
+
         FileReport fileReport = new TXT();
         List<String> content = new LinkedList<>();
         content.add("Tổng số test case "+testResult.getNCase());
         content.add("Tổng số test fail "+testResult.getFailCases().size());
-        fileReport.write(fileName, content);
+        fileReport.write(txtFileName, content);
+
+        Word word = new DOCX();
         for(TestCase testCase: testResult.getFailCases()) {
-            testCase.getFailImg().save(testCase.getId()+".png",System.getProperty("user.dir") + "\\FileOutput\\");
+            word.write(wordFileName, Arrays.asList(testCase.getId()));
+            word.printImage(wordFileName, testCase.getFailImg());
         }
     }
 
