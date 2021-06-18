@@ -12,6 +12,7 @@ public class Function {
 
     static {
         backButtons = new ArrayList<>();
+        backButtons.add(Arrays.asList("name:btn_Accept"));
         backButtons.add(Arrays.asList("name:btn_Menu"));
         backButtons.add(Arrays.asList(new String[]{"name:btn_Close", "width:184"}));
         backButtons.add(Arrays.asList("name:btn_Close"));

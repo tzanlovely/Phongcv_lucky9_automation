@@ -22,6 +22,7 @@ public class ZPCheat {
     }
 
     public static void cheatData(int testCaseId) throws Exception {
+        System.out.println("Cheat: "+testCaseId);
         driver.get(cheatDataURL);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("form-manage-test-case-button")));
         driver.findElement(By.id("form-manage-test-case-button")).click();

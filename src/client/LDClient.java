@@ -138,7 +138,7 @@ public class LDClient implements IClient {
             app.focus();
             JSONArray positionLog = getPosition();
             jsonObject = Json.findJsonObjectByFilter(positionLog, filter);
-            Thread.sleep(500);
+//            Thread.sleep(500);
             i--;
         }
         assert jsonObject != null;
@@ -150,7 +150,7 @@ public class LDClient implements IClient {
         app.focus();
 
         JSONObject jsonObject = waitForExisting(filter);
-        Thread.sleep(300);
+        Thread.sleep(200);
         System.out.println("click: "+ filter.toString());
         assert jsonObject != null;
         Node node = new Node(jsonObject);

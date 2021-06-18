@@ -26,15 +26,17 @@ public class BasicRunTest implements IRunTest {
         }
 
         for (TestCase testCase: testCases) {
-//            ZPCheat zpCheat = new ZPCheat();
-//            ZPCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
+            ZPCheat zpCheat = new ZPCheat();
+            ZPCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
             Step[] steps = testCase.getSteps();
+
+            Set<IClient> iClientSet = new HashSet<>();
             for (Step step: steps) {
                 Thread.sleep(1000);
                 System.out.println("do step: "+ step.toString());
                 boolean result = true;
                 try {
-                    result = doStep(step);
+                    result = doStep(step, iClientSet);
                 } catch (Exception e) {
                     result = false;
                 }
@@ -46,12 +48,17 @@ public class BasicRunTest implements IRunTest {
                     testCase.setFailStep(step);
                     if(step.getTarget()!=null) {
                         testCase.setFailImg(step.getTarget().captureScreen());
-                        Function.backToLobby(step.getTarget());
-                        Function.logOut(step.getTarget());
+                        for(IClient iClient: iClientSet) {
+                            Function.backToLobby(iClient);
+                            Function.logOut(iClient);
+                        }
                     } else if (step.getParams()!=null && step.getParams().length>0 && step.getParams()[0] instanceof IClient) {
                         testCase.setFailImg(((IClient)step.getParams()[0]).captureScreen());
-                        Function.backToLobby((IClient) step.getParams()[0]);
-                        Function.logOut((IClient) step.getParams()[0]);
+                        for(IClient iClient: iClientSet) {
+                            Function.backToLobby((IClient) step.getParams()[0]);
+                            Function.logOut((IClient) step.getParams()[0]);
+                            iClientSet.remove((IClient) step.getParams()[0]);
+                        }
                     }
                     testResult.getFailCases().add(testCase);
                     break;
@@ -63,13 +70,14 @@ public class BasicRunTest implements IRunTest {
         return testResult;
     }
 
-    private boolean doStep(Step step) throws Exception {
+    private boolean doStep(Step step, Set<IClient> iClientSet) throws Exception {
         try {
             System.out.println(this.toString());
             Object preResult = null;
             boolean isArray = false;
 
             if (step.getTarget() != null) {
+                iClientSet.add(step.getTarget());
                 if (step.getParams() != null) {
                     for (Object param : step.getParams()) {
                         if (((String) param).contains(":")) {
@@ -84,6 +92,7 @@ public class BasicRunTest implements IRunTest {
                     preResult = step.getAction().invoke(step.getTarget(), step.getParams());
                 }
             } else {
+                if (step.getParams()!=null && step.getParams().length>1 && step.getParams()[0] instanceof IClient) iClientSet.add((IClient) step.getParams()[0]);
                 preResult = step.getAction().invoke(step.getTarget(), step.getParams());
             }
 

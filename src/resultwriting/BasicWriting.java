@@ -35,7 +35,7 @@ public class BasicWriting implements IResultWriting {
         fileReport.write(txtFileName, content);
 
         for(TestCase testCase: testResult.getFailCases()) {
-            word.write(wordFileName, Arrays.asList(testCase.getId()));
+            word.write(wordFileName, Arrays.asList(new String[]{testCase.getId(), "Step: "+testCase.getFailStep().getStepID()}));
             word.printImage(wordFileName, testCase.getFailImg());
         }
     }

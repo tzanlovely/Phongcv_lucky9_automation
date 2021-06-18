@@ -16,8 +16,9 @@ public class Main {
     private static IRunTest runTest = new BasicRunTest();
     private static IResultWriting resultWriting = new BasicWriting(new TXT(), new DOCX());
     private static List<ITestLoading> testSets = new ArrayList<>();
-    private static String[] names = new String[]{"channelTest"};
-
+    private static String[] names = new String[]{"calcGoldTest"};
+    //channelTest
+    //calcGoldTest
     public static void main(String[] args) throws Exception {
         for(String name: names) {
             ITestLoading iTestLoading = new BasicTestLoading(new XLSX(), name);
