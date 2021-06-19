@@ -29,12 +29,11 @@ public class BasicRunTest implements IRunTest {
             ZPCheat zpCheat = new ZPCheat();
             ZPCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
             Step[] steps = testCase.getSteps();
-
+            boolean result = true;
             Set<IClient> iClientSet = new HashSet<>();
             for (Step step: steps) {
                 Thread.sleep(1000);
                 System.out.println("do step: "+ step.toString());
-                boolean result = true;
                 try {
                     result = doStep(step, iClientSet);
                 } catch (Exception e) {
@@ -63,6 +62,10 @@ public class BasicRunTest implements IRunTest {
                     testResult.getFailCases().add(testCase);
                     break;
                 }
+            }
+            if (result==true) {
+                testCase.setResult("pass");
+                testResult.setPassCases(testCases);
             }
         }
 

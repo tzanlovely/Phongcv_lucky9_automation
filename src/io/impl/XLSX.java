@@ -2,7 +2,15 @@ package io.impl;
 
 import io.Excel;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class XLSX implements Excel {
     private static final String filePath = System.getProperty("user.dir") + "\\ExcelFile\\";
@@ -61,14 +69,31 @@ public class XLSX implements Excel {
 
     @Override
     public void write(Sheet sheet, int rowBegin, int columnBegin, int rowEnd, int columnEnd, String[][] content) {
+        int iContent=0, jContent=0;
         for(int i=rowBegin; i<=rowEnd; i++) {
             Row row = sheet.getRow(i);
             if (row == null) row = sheet.createRow(i);
             for (int j=columnBegin; j<=columnEnd; j++) {
                 Cell cell = row.getCell(j);
-                if (cell == null) cell = row.createCell(j, CellType.STRING);
-                cell.setCellValue(content[i][j]);
+                if (cell!=null) row.removeCell(cell);
+                cell = row.createCell(j, CellType.STRING);
+                cell.setCellValue(content[iContent][jContent]);
+                jContent++;
             }
+            iContent++;
+        }
+    }
+
+    @Override
+    public void export(Workbook workbook, String fileName) {
+        File newFile = new File(filePath+fileName);
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+            workbook.write(fileOutputStream);
+            workbook.close();
+            Files.delete(Paths.get(filePath+fileName));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

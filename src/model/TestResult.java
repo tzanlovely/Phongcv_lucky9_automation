@@ -9,12 +9,14 @@ public class TestResult {
     private int nTestedCase;
     private int nFailCase;
     private List<TestCase> failCases;
+    private List<TestCase> passCases;
 
     public TestResult() {
         nCase = 0;
         nTestedCase = 0;
         nFailCase = 0;
         failCases = new ArrayList<>();
+        passCases = new ArrayList<>();
     }
 
     public int getNFailCase() {
@@ -47,5 +49,13 @@ public class TestResult {
 
     public void setFailCases(List<TestCase> failCases) {
         this.failCases = failCases;
+    }
+
+    public List<TestCase> getPassCases() {
+        return passCases;
+    }
+
+    public void setPassCases(List<TestCase> passCases) {
+        this.passCases = passCases;
     }
 }

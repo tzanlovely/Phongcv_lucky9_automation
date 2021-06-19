@@ -30,5 +30,4 @@ public class Main {
             resultWriting.writeOut(testResult, names[i]);
         }
     }
-
 }

@@ -1,12 +1,19 @@
 package resultwriting;
 
+import io.Excel;
 import io.FileReport;
 import io.Word;
 import io.impl.DOCX;
 import io.impl.TXT;
+import io.impl.XLSX;
 import model.TestCase;
 import model.TestResult;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import utilities.Json;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -38,5 +45,18 @@ public class BasicWriting implements IResultWriting {
             word.write(wordFileName, Arrays.asList(new String[]{testCase.getId(), "Step: "+testCase.getFailStep().getStepID()}));
             word.printImage(wordFileName, testCase.getFailImg());
         }
+
+        String excelName = Json.read(System.getProperty("user.dir") + "\\Config\\config.json").getString(fileName);
+        Excel excel = new XLSX();
+        Workbook workbook = excel.openFile(excelName);
+        for(TestCase testCase: testResult.getFailCases()) {
+            Sheet sheet = excel.openSheet(workbook, testCase.getId());
+            excel.write(sheet, 3, 1, 3, 1, new String[][]{{testCase.getResult()}});
+        }
+        for (TestCase testCase: testResult.getPassCases()) {
+            Sheet sheet = excel.openSheet(workbook, testCase.getId());
+            excel.write(sheet, 3, 1, 3, 1, new String[][]{{testCase.getResult()}});
+        }
+        excel.export(workbook, "tmp.xlsx");
     }
 }

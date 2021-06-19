@@ -75,7 +75,7 @@ public class LDClient implements IClient {
         return calLocation(new Location(node.x * width / screenWidth, (screenHeight - node.y) * height / screenHeight));
     }
 
-    protected void refreshLog() throws Exception {
+    public void refreshLog() throws Exception {
         app.focus();
         try {
             window.click(imgPath + "cheatIcon.png");
