@@ -26,6 +26,7 @@ public class Function {
             clearText(client, "name:sprite_Name");
             client.type(id);
             client.click(Arrays.asList("name:btn_Ok"));
+            Thread.sleep(1500);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -39,6 +40,7 @@ public class Function {
             if (!client.isExist(Arrays.asList("name:btn_Settings"))) return false;
             client.click(Arrays.asList("name:btn_Settings"));
             client.click(Arrays.asList("name:btn_Logout"));
+            Thread.sleep(100);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

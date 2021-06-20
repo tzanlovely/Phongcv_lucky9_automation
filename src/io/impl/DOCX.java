@@ -45,7 +45,7 @@ public class DOCX implements Word {
     }
 
     @Override
-    public void printImage(String fileName, Image image) {
+    public void printImage(String fileName, Image image, float scale) {
         try {
             File file = new File(System.getProperty("user.dir") + "\\FileOutput\\"+fileName);
             image.save("tmp.png", System.getProperty("user.dir") + "\\FileOutput\\");
@@ -64,7 +64,7 @@ public class DOCX implements Word {
             int height = bufferedImage.getHeight();
             XWPFParagraph paragraph = xwpfDocument.createParagraph();
             XWPFRun run = paragraph.createRun();
-            run.addPicture(new FileInputStream(imgFile), XWPFDocument.PICTURE_TYPE_PNG, imgFile.getName(), Units.toEMU(width)/2, Units.toEMU(height)/2);
+            run.addPicture(new FileInputStream(imgFile), XWPFDocument.PICTURE_TYPE_PNG, imgFile.getName(), (int)(Units.toEMU(width)*scale), (int)(Units.toEMU(height)*scale));
 
             FileOutputStream out = new FileOutputStream(file);
             xwpfDocument.write(out);

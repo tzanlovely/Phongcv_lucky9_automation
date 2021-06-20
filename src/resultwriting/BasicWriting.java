@@ -29,7 +29,7 @@ public class BasicWriting implements IResultWriting {
     }
 
     @Override
-    public void writeOut(TestResult testResult, String fileName) throws Exception {
+    public void writeOut(TestResult testResult, String fileName, float imgScale) throws Exception {
         Calendar calendar = Calendar.getInstance();
         String txtFileName = String.format("%s_%d.%d_%d.%d.%d.%s",fileName,calendar.get(Calendar.MINUTE),calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),".txt");
         String wordFileName = txtFileName.replace("txt","docx");
@@ -43,7 +43,7 @@ public class BasicWriting implements IResultWriting {
 
         for(TestCase testCase: testResult.getFailCases()) {
             word.write(wordFileName, Arrays.asList(new String[]{testCase.getId(), "Step: "+testCase.getFailStep().getStepID()}));
-            word.printImage(wordFileName, testCase.getFailImg());
+            word.printImage(wordFileName, testCase.getFailImg(), imgScale);
         }
 
         String excelName = Json.read(System.getProperty("user.dir") + "\\Config\\config.json").getString(fileName);

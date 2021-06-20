@@ -1,3 +1,5 @@
+import client.IClient;
+import client.LDClient;
 import io.impl.DOCX;
 import io.impl.TXT;
 import io.impl.XLSX;
@@ -20,6 +22,7 @@ public class Main {
     //channelTest
     //calcGoldTest
     public static void main(String[] args) throws Exception {
+        LDClient.usingCache=true;
         for(String name: names) {
             ITestLoading iTestLoading = new BasicTestLoading(new XLSX(), name);
             testSets.add(iTestLoading);
@@ -27,7 +30,7 @@ public class Main {
 
         for (int i=0; i<testSets.size(); i++) {
             TestResult testResult = runTest.runTest(testSets.get(i));
-            resultWriting.writeOut(testResult, names[i]);
+            resultWriting.writeOut(testResult, names[i], 0.5F);
         }
     }
 }

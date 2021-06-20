@@ -16,7 +16,7 @@ public class AdbLog {
 
     public AdbLog(String adbAddress){
         this.adbAddress=adbAddress;
-        commands = new String[]{"adb","-s",adbAddress,"logcat","-t","50000"};
+        commands = new String[]{"adb","-s",adbAddress,"logcat","-t","100000"};
     }
 
     private String getAdbLog() {

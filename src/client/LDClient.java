@@ -11,11 +11,14 @@ import utilities.AdbLog;
 import utilities.Json;
 import utilities.Node;
 
-import java.util.List;
+import java.util.*;
 
 
 public class LDClient implements IClient {
     protected static LDClient[] LDClients = new LDClient[6];
+
+    public static boolean usingCache = false;
+    private static Set<JSONObject> buttonCache = new HashSet<>();
 
     protected String title;
     protected float width;
@@ -90,6 +93,23 @@ public class LDClient implements IClient {
         Thread.sleep(100);
     }
 
+    synchronized private static void addToCache(JSONObject btn) {
+        if (!buttonCache.contains(btn)) buttonCache.add(btn);
+    }
+
+    private static JSONObject findInCache(List<String> filter) {
+        Iterator<JSONObject> btnIterator = buttonCache.iterator();
+        JSONObject result = null;
+        while(btnIterator.hasNext()) {
+            JSONObject btn = btnIterator.next();
+            if (Json.isInJSONObject(btn, filter)) {
+                result = btn;
+                break;
+            }
+        }
+        return result;
+    }
+
     public JSONObject getUserInfo() throws Exception {
         app.focus();
         JSONObject userInfo = null;
@@ -98,11 +118,11 @@ public class LDClient implements IClient {
             userInfo = adbLog.getUserInfo();
         } catch (JSONException e) {
             System.out.println("JSONException");
-            Thread.sleep(500);
+            Thread.sleep(100);
             userInfo = getUserInfo();
         } catch (StringIndexOutOfBoundsException e) {
             System.out.println("String index out of bounds exception");
-            Thread.sleep(500);
+            Thread.sleep(100);
             userInfo = getUserInfo();
         }
         return userInfo;
@@ -141,16 +161,20 @@ public class LDClient implements IClient {
 //            Thread.sleep(500);
             i--;
         }
-        assert jsonObject != null;
+        if (jsonObject!=null) addToCache(jsonObject);
+//        assert jsonObject!=null;
         return jsonObject;
     }
 
     @Override
     public void click(List<String> filter) throws Exception {
         app.focus();
-
-        JSONObject jsonObject = waitForExisting(filter);
-        Thread.sleep(200);
+        JSONObject jsonObject = null;
+        if (LDClient.usingCache) {
+            jsonObject = findInCache(filter);
+        }
+        if (jsonObject == null) jsonObject = waitForExisting(filter);
+        Thread.sleep(100);
         System.out.println("click: "+ filter.toString());
         assert jsonObject != null;
         Node node = new Node(jsonObject);
@@ -160,6 +184,12 @@ public class LDClient implements IClient {
     @Override
     public void type(String content) throws Exception {
         window.type(content);
+    }
+
+    @Override
+    public void dragDrop(String begin, String end) throws Exception {
+        app.focus();
+        window.dragDrop(imgPath+begin, imgPath+end);
     }
 
     public Image captureScreen() {
