@@ -6,23 +6,28 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AdbLog {
-
     public String adbAddress;
-    private String[] commands;
 
     public AdbLog(String adbAddress){
         this.adbAddress=adbAddress;
-        commands = new String[]{"adb","-s",adbAddress,"logcat","-t","100000"};
     }
 
     private String getAdbLog() {
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss.SSS");
+        LocalDateTime localDateTime = LocalDateTime.now().minus(Duration.ofMillis(2000));
+        String fromTime = dtf.format(localDateTime);
+
         Process process= null;
         try {
-            process = Runtime.getRuntime().exec(commands);
+            process = Runtime.getRuntime().exec(new String[]{"adb","-s",adbAddress,"logcat","-t", fromTime});
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,6 +35,7 @@ public class AdbLog {
         assert process != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line="";
+
         while (true) {
             try {
                 if ((line = reader.readLine()) == null) break;
@@ -40,7 +46,9 @@ public class AdbLog {
             log += "\n";
         }
 
-        log = log.substring(log.lastIndexOf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"), log.lastIndexOf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"));
+
+
+        log = log.substring(log.lastIndexOf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"));
 
 
         return log;
@@ -67,7 +75,7 @@ public class AdbLog {
     }
 
 
-    synchronized public JSONArray getPositionLog() {
+    public JSONArray getPositionLog() {
         String log = getAdbLog();
         ArrayList<String> lines = new ArrayList<>(Arrays.asList(log.split("\n")));
         for (int i = 0; i < lines.size(); i++) {
@@ -84,9 +92,31 @@ public class AdbLog {
             positionLog += parts[3];
         }
 
-//        System.out.println("position log: \n" + positionLog);
+        JSONArray jsonArray=new JSONArray();
+        int start=0;
+        int end=0;
+        int index=0;
+        String object="";
+        while (true){
+            start=positionLog.indexOf('{',index);
+            end=positionLog.indexOf('}',index);
+            if(start==-1||end==-1){
+                break;
+            }
+            index=end+1;
+            object=positionLog.substring(start,end+1);
+//            System.out.println(object);
+            try{
+                JSONObject jsonObject=new JSONObject(object);
+                jsonArray.put(jsonObject);
+            }
+            catch (Exception e){
+//                System.out.println("JSON Exception");
+            }
+        }
+        System.out.println(jsonArray);
+        return jsonArray;
 
-        return new JSONArray(positionLog);
     }
 
 

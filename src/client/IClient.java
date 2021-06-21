@@ -1,7 +1,5 @@
 package client;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.sikuli.script.Image;
 
 import java.util.List;

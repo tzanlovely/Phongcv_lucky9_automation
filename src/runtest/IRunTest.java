@@ -1,8 +1,8 @@
 package runtest;
 
 import model.TestResult;
-import testloading.ITestLoading;
+import model.TestSet;
 
 public interface IRunTest {
-    public TestResult runTest(ITestLoading ITestLoading) throws  Exception;
+    public TestResult runTest(TestSet testSet) throws  Exception;
 }

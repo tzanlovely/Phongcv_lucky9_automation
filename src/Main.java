@@ -1,9 +1,9 @@
-import client.IClient;
 import client.LDClient;
 import io.impl.DOCX;
-import io.impl.TXT;
+import io.impl.TXTimpl;
 import io.impl.XLSX;
 import model.TestResult;
+import model.TestSet;
 import resultwriting.BasicWriting;
 import resultwriting.IResultWriting;
 import runtest.BasicRunTest;
@@ -16,16 +16,17 @@ import java.util.List;
 
 public class Main {
     private static IRunTest runTest = new BasicRunTest();
-    private static IResultWriting resultWriting = new BasicWriting(new TXT(), new DOCX());
-    private static List<ITestLoading> testSets = new ArrayList<>();
+    private static IResultWriting resultWriting = new BasicWriting(new TXTimpl(), new DOCX(), new XLSX());
+    private static List<TestSet> testSets = new ArrayList<>();
     private static String[] names = new String[]{"calcGoldTest"};
+    private static ITestLoading iTestLoading = new BasicTestLoading(new XLSX());
     //channelTest
     //calcGoldTest
     public static void main(String[] args) throws Exception {
         LDClient.usingCache=true;
         for(String name: names) {
-            ITestLoading iTestLoading = new BasicTestLoading(new XLSX(), name);
-            testSets.add(iTestLoading);
+            TestSet testSet = iTestLoading.getTestSet(name);
+            testSets.add(testSet);
         }
 
         for (int i=0; i<testSets.size(); i++) {

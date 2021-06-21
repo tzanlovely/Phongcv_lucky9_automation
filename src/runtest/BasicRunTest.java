@@ -6,15 +6,13 @@ import model.Step;
 import model.TestCase;
 import model.TestResult;
 import model.TestSet;
-import testloading.ITestLoading;
 import utilities.ZPCheat;
 
 import java.util.*;
 
 public class BasicRunTest implements IRunTest {
     @Override
-    public TestResult runTest(ITestLoading iTestLoading) throws Exception {
-        TestSet testSet = iTestLoading.getTestSet();
+    public TestResult runTest(TestSet testSet) throws Exception {
         List<TestCase> testCases = testSet.getTestingCase();
         TestResult testResult = new TestResult();
         testResult.setNCase(testSet.getIgnoreCase().size()+testSet.getTestingCase().size());
@@ -103,9 +101,6 @@ public class BasicRunTest implements IRunTest {
                 return (boolean) preResult;
             }
         } catch (Exception e) {
-            System.out.println("****************************************************************************************");
-            System.out.println("ERROR: "+step.toString());
-            System.out.println("****************************************************************************************");
             e.printStackTrace();
             throw e;
         }

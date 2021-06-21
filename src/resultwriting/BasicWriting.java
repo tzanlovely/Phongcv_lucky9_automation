@@ -1,31 +1,29 @@
 package resultwriting;
 
 import io.Excel;
-import io.FileReport;
+import io.TXT;
 import io.Word;
-import io.impl.DOCX;
-import io.impl.TXT;
 import io.impl.XLSX;
 import model.TestCase;
 import model.TestResult;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import utilities.Json;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
 public class BasicWriting implements IResultWriting {
-    private FileReport fileReport;
+    private TXT TXT;
     private Word word;
+    private Excel excel;
 
-    public BasicWriting(FileReport fileReport, Word word) {
-        this.fileReport = fileReport;
+    public BasicWriting(TXT TXT, Word word, Excel excel) {
+        this.TXT = TXT;
         this.word = word;
+        this.excel = excel;
     }
 
     @Override
@@ -39,7 +37,7 @@ public class BasicWriting implements IResultWriting {
         content.add("Tổng số test fail "+testResult.getNFailCase());
         content.add("Tổng số case đã test trong lần chạy này: "+testResult.getNTestedCase());
         content.add("Tổng số case fail trong lần chạy này: " +testResult.getFailCases().size());
-        fileReport.write(txtFileName, content);
+        TXT.write(txtFileName, content);
 
         for(TestCase testCase: testResult.getFailCases()) {
             word.write(wordFileName, Arrays.asList(new String[]{testCase.getId(), "Step: "+testCase.getFailStep().getStepID()}));
@@ -47,7 +45,6 @@ public class BasicWriting implements IResultWriting {
         }
 
         String excelName = Json.read(System.getProperty("user.dir") + "\\Config\\config.json").getString(fileName);
-        Excel excel = new XLSX();
         Workbook workbook = excel.openFile(excelName);
         for(TestCase testCase: testResult.getFailCases()) {
             Sheet sheet = excel.openSheet(workbook, testCase.getId());

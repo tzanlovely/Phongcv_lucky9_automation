@@ -2,14 +2,14 @@ package testloading;
 
 import client.IClient;
 import io.Excel;
-import model.Status;
 import model.Step;
 import model.TestCase;
 import model.TestSet;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
-import utilities.*;
+import utilities.Json;
+import utilities.MethodExtractor;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,10 +21,9 @@ public class BasicTestLoading implements ITestLoading {
     private TestSet testSet;
     private List<Status> statuses;
 
-    public BasicTestLoading(Excel xlsx, String name) {
+    public BasicTestLoading(Excel xlsx) {
         this.xlsx = xlsx;
         testSet = new TestSet();
-        loadTestSet(name);
     }
 
     private TestCase loadTestCase(Sheet sheet) {
@@ -117,7 +116,7 @@ public class BasicTestLoading implements ITestLoading {
         return step;
     }
 
-    private ArrayList<Status> getStatus(Sheet sheet) {
+    private List<Status> getStatus(Sheet sheet) {
         Object[][] result = xlsx.read(sheet, 1, 0, 1);
         ArrayList<Status> statuses = new ArrayList<>();
 
@@ -153,7 +152,29 @@ public class BasicTestLoading implements ITestLoading {
     }
 
     @Override
-    public TestSet getTestSet() {
+    public TestSet getTestSet(String name) {
+        loadTestSet(name);
         return this.testSet;
+    }
+
+    private class Status {
+        private String testCase;
+        private String status;
+
+        public String getTestCase() {
+            return testCase;
+        }
+
+        public void setTestCase(String testCase) {
+            this.testCase = testCase;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
     }
 }
