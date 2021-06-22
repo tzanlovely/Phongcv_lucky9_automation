@@ -18,30 +18,23 @@ import java.util.Set;
 
 
 public class LDClient implements IClient {
-    protected static LDClient[] LDClients = new LDClient[6];
-
     public static boolean usingCache = false;
     private static Set<JSONObject> buttonCache = new HashSet<>();
 
     protected String title;
     protected float width;
     protected float height;
-
     protected App app;
     protected Region window;
-
     protected AdbLog adbLog;
-
     public static final String imgPath = System.getProperty("user.dir") + "\\Image\\";
     public static JSONObject config = Json.read(System.getProperty("user.dir") + "\\Config\\config.json");
-
     protected float screenWidth=config.getFloat("screenWidth");
     protected float screenHeight=config.getFloat("screenHeight");
-
     private static final int topBarHeight =35;
 
+    protected static LDClient[] LDClients = new LDClient[10];
     synchronized public static LDClient getInstance(int id) {
-        assert id>0 && id<=6;
         if (LDClients[id-1] == null) {
             LDClients[id-1] = new LDClient("Client"+id);
             System.out.println("created "+ LDClients[id-1]);
@@ -121,11 +114,11 @@ public class LDClient implements IClient {
             userInfo = adbLog.getUserInfo();
         } catch (JSONException e) {
             System.out.println("JSONException");
-            Thread.sleep(100);
+            Thread.sleep(500);
             userInfo = getUserInfo();
         } catch (StringIndexOutOfBoundsException e) {
             System.out.println("String index out of bounds exception");
-            Thread.sleep(100);
+            Thread.sleep(500);
             userInfo = getUserInfo();
         }
         return userInfo;
@@ -161,11 +154,10 @@ public class LDClient implements IClient {
             app.focus();
             JSONArray positionLog = getPosition();
             jsonObject = Json.findJsonObjectByFilter(positionLog, filter);
-//            Thread.sleep(500);
+            Thread.sleep(100);
             i--;
         }
-        if (jsonObject!=null) addToCache(jsonObject);
-//        assert jsonObject!=null;
+        if (jsonObject!=null && usingCache) addToCache(jsonObject);
         return jsonObject;
     }
 
@@ -177,7 +169,6 @@ public class LDClient implements IClient {
             jsonObject = findInCache(filter);
         }
         if (jsonObject == null) jsonObject = waitForExisting(filter);
-        Thread.sleep(100);
         System.out.println("click: "+ filter.toString());
         assert jsonObject != null;
         Node node = new Node(jsonObject);

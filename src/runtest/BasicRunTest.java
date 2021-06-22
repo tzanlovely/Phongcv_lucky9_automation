@@ -24,13 +24,12 @@ public class BasicRunTest implements IRunTest {
         }
 
         for (TestCase testCase: testCases) {
-            ZPCheat zpCheat = new ZPCheat();
             ZPCheat.cheatData(Integer.parseInt(testCase.getCheatID()));
             Step[] steps = testCase.getSteps();
             boolean result = true;
             Set<IClient> iClientSet = new HashSet<>();
             for (Step step: steps) {
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 System.out.println("do step: "+ step.toString());
                 try {
                     result = doStep(step, iClientSet);

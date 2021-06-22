@@ -69,7 +69,6 @@ public class AdbLog {
         for (String s : lines) {
             userInfo += s.split("    ")[3];
         }
-        System.out.println(userInfo);
 
         return new JSONObject(userInfo);
     }
@@ -105,16 +104,13 @@ public class AdbLog {
             }
             index=end+1;
             object=positionLog.substring(start,end+1);
-//            System.out.println(object);
             try{
                 JSONObject jsonObject=new JSONObject(object);
                 jsonArray.put(jsonObject);
             }
             catch (Exception e){
-//                System.out.println("JSON Exception");
             }
         }
-        System.out.println(jsonArray);
         return jsonArray;
 
     }

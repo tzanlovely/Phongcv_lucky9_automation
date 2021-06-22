@@ -13,7 +13,7 @@ public class ZPCheat {
     private static WebDriver driver;
     private static WebDriverWait wait;
 
-    public ZPCheat() {
+    static  {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("user-data-dir=" + System.getProperty("user.dir") + "\\ChromeProfile\\");
         driver = new ChromeDriver(options);
@@ -28,17 +28,14 @@ public class ZPCheat {
         driver.findElement(By.id("form-manage-test-case-button")).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[text()='" + testCaseId + "']/parent::*/td/span[@id='run-button']")));
-        Thread.sleep(500);
+        Thread.sleep(200);
         driver.findElement(By.xpath("//td[text()='" + testCaseId + "']/parent::*/td/span[@id='upload-button']")).click();
+        Thread.sleep(200);
+    }
 
-        new Thread(() -> {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            driver.close();
-        }).run();
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        driver.close();
     }
 }

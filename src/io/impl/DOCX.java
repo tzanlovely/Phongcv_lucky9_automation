@@ -49,6 +49,7 @@ public class DOCX implements Word {
             File file = new File(System.getProperty("user.dir") + "\\FileOutput\\"+fileName);
             image.save("tmp.png", System.getProperty("user.dir") + "\\FileOutput\\");
             File imgFile = new File(System.getProperty("user.dir") + "\\FileOutput\\"+"tmp.png");
+
             if (!file.exists()) file.createNewFile();
             XWPFDocument xwpfDocument;
             if (file.length()>0) {

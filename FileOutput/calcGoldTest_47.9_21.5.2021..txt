@@ -1,4 +1,0 @@
-Tổng số test case 13
-Tổng số test fail 0
-Tổng số case đã test trong lần chạy này: 4
-Tổng số case fail trong lần chạy này: 0
