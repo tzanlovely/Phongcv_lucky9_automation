@@ -10,6 +10,7 @@ import runtest.BasicRunTest;
 import runtest.IRunTest;
 import testloading.BasicTestLoading;
 import testloading.ITestLoading;
+import utilities.ZPCheat;
 
 public class Main {
     private static IRunTest runTest = new BasicRunTest();
@@ -25,5 +26,6 @@ public class Main {
             TestResult testResult = runTest.runTest(testSet);
             resultWriting.writeOut(testResult, name, 0.5F);
         }
+        ZPCheat.close();
     }
 }

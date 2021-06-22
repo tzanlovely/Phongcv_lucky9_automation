@@ -33,6 +33,10 @@ public class ZPCheat {
         Thread.sleep(200);
     }
 
+    public static void close() {
+        driver.close();
+    }
+
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
