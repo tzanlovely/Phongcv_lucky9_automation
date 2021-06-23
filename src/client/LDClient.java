@@ -80,7 +80,7 @@ public class LDClient implements IClient {
             window.click(imgPath + "cheatIcon.png");
         } catch (Exception e) {
             try {
-                window.click(imgPath + "cheatIcon.png");
+                window.click(imgPath + "icongame.png");
             } catch (Exception ex) {
                 throw ex;
             }
@@ -149,12 +149,12 @@ public class LDClient implements IClient {
 
     public JSONObject waitForExisting(List<String> filter) throws Exception {
         JSONObject jsonObject = null;
-        int i = 20;
+        int i = 25;
         while(jsonObject==null && i>0) {
             app.focus();
             JSONArray positionLog = getPosition();
             jsonObject = Json.findJsonObjectByFilter(positionLog, filter);
-            Thread.sleep(100);
+            Thread.sleep(150);
             i--;
         }
         if (jsonObject!=null && usingCache) addToCache(jsonObject);

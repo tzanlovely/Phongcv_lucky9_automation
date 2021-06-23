@@ -1,17 +1,20 @@
 {
     "Client1": {
-        "adbAddress": "127.0.0.1:5555"
+        "adbAddress": "emulator-5554"
     },
     "Client2": {
-        "adbAddress": "127.0.0.1:5557"
+        "adbAddress": "emulator-5556"
     },
     "Client3": {
-        "adbAddress": "127.0.0.1:5559"
+        "adbAddress": "emulator-5558"
+    },
+    "Client4": {
+        "adbAddress": "emulator-5560"
     },
     "screenWidth": 1138,
     "screenHeight": 640,
     "linkCheat": "https://admin.zingplay.com/en/tools/deploy_docker/details/luckynine/socket_server/dev/0",
 
     "channelTest": "ChannelTestCase.xlsx",
-    "calcGoldTest": "calcGoldTest.xlsx"
+    "calcGoldTest": "CalcGoldTest.xlsx"
 }

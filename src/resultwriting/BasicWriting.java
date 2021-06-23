@@ -51,6 +51,6 @@ public class BasicWriting implements IResultWriting {
             Sheet sheet = excel.openSheet(workbook, testCase.getId());
             excel.write(sheet, 3, 1, 3, 1, new String[][]{{testCase.getResult()}});
         }
-        excel.export(workbook, "tmp.xlsx");
+        excel.export(workbook, excelName);
     }
 }

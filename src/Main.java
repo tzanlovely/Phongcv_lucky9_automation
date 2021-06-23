@@ -17,14 +17,14 @@ public class Main {
     private static IResultWriting resultWriting = new BasicWriting(new TXTimpl(), new DOCX(), new XLSX());
     //channelTest
     //calcGoldTest
-    private static String[] names = new String[]{"calcGoldTest", "channelTest"};
+    private static String[] names = new String[]{"channelTest", "calcGoldTest"};
     private static ITestLoading iTestLoading = new BasicTestLoading(new XLSX());
     public static void main(String[] args) throws Exception {
         LDClient.usingCache=false;
         for(String name: names) {
             TestSet testSet = iTestLoading.getTestSet(name);
             TestResult testResult = runTest.runTest(testSet);
-            resultWriting.writeOut(testResult, name, 0.5F);
+            if(testResult.getNTestedCase()>0) resultWriting.writeOut(testResult, name, 0.5F);
         }
         ZPCheat.close();
     }

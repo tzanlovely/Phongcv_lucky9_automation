@@ -22,7 +22,7 @@ public class AdbLog {
     private String getAdbLog() {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss.SSS");
-        LocalDateTime localDateTime = LocalDateTime.now().minus(Duration.ofMillis(2000));
+        LocalDateTime localDateTime = LocalDateTime.now().minus(Duration.ofMillis(3000));
         String fromTime = dtf.format(localDateTime);
 
         Process process= null;

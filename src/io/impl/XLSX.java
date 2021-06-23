@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +20,9 @@ public class XLSX implements Excel {
     public Workbook openFile(String fileName) {
         Workbook workbook = null;
         try {
-            workbook = new XSSFWorkbook(filePath + fileName);
+            FileInputStream inputStream = new FileInputStream(filePath+fileName);
+            workbook = WorkbookFactory.create(inputStream);
+            inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,12 +91,11 @@ public class XLSX implements Excel {
             FileOutputStream fileOutputStream = new FileOutputStream(newFile);
             workbook.write(fileOutputStream);
             workbook.close();
-            Files.delete(Paths.get(filePath+fileName));
+            fileOutputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     private Object getCellValue(Cell cell) {
         if (cell == null) return null;
